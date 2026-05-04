@@ -1,0 +1,11 @@
+.logo-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #1976d233;
+  object-fit: cover;
+  border: 2px solid #0d1620;
+  background: #fff;
+  display: block;
+  margin: 0 auto;
+}
