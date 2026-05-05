@@ -12,8 +12,8 @@ const uri = process.env.MONGO_URI;
 if (!uri) {
   throw new Error("MONGODB_URI is not set in .env");
 }
-const client = new MongoClient(uri);
 
+const client = new MongoClient(uri);
 let usageCollection;
 
 async function connectDB() {
@@ -22,12 +22,16 @@ async function connectDB() {
   usageCollection = db.collection("usage");
   console.log("connected to mongo");
 }
+connectDB().catch(console.error);
 
-try {
-  connectDB();
-} catch (e) {
-  console.log(e);
-}
+app.post("/usage", async (req, res) => {
+  try {
+    const result = await usageCollection.insertOne(req.body);
+    res.status(201).json({ insertedId: result.insertedId });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {
