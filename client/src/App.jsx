@@ -7,13 +7,28 @@ import logo from "./assets/eToro-logo.png";
 import MyText from "./components/MyText/MyText";
 import MyInput from "./components/MyInput/MyInput";
 import DropDown from "./components/DropDown/DropDown";
-
+import BarChart from "./components/BarChart/BarChart";
 import { INTERVAL_OPTIONS, MODELS, TOOLS } from "./constants/constants";
 
 export default function App() {
   const [interval, setInterval] = useState(INTERVAL_OPTIONS[0].value);
   const [tool, setTool] = useState(TOOLS[0].value);
   const [model, setModel] = useState(MODELS[0].value);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [records, setRecords] = useState([]);
+
+  async function handleOnSubmit() {
+    const params = new URLSearchParams();
+    if (tool !== "all") params.append("tool", tool);
+    if (model !== "all") params.append("model", model);
+    if (startDate) params.append("from", startDate);
+    if (endDate) params.append("until", endDate);
+
+    const response = await fetch(`http://localhost:3000/usage?${params}`);
+    const data = await response.json();
+    setRecords(data);
+  }
 
   return (
     <div className="main">
@@ -24,11 +39,17 @@ export default function App() {
       <div className="user-input-fields">
         <div>
           <MyText text="from date" />
-          <MyInput />
+          <MyInput
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
         </div>
         <div>
           <MyText text="until date" />
-          <MyInput />
+          <MyInput
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
         </div>
 
         <div>
@@ -49,9 +70,10 @@ export default function App() {
         </div>
         <div className="submit-wrapper">
           <MyText text=" " />
-          <MyButton text="submit" />
+          <MyButton text="submit" onClick={() => handleOnSubmit()} />
         </div>
       </div>
+      {records.length > 0 && <BarChart records={records} tool={tool} />}
     </div>
   );
 }
