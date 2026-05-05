@@ -18,6 +18,11 @@ export const MODELS = [
   { label: "DeepSeek-V2", value: "deepseek-v2" },
 ];
 
+export const METRIC_OPTIONS = [
+  { label: "Cost (USD)", value: "cost" },
+  { label: "Usage (Tokens)", value: "tokens" },
+];
+
 export const INTERVAL_OPTIONS = [
   { label: "Daily", value: "daily" },
   { label: "Weekly", value: "weekly" },

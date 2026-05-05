@@ -8,7 +8,9 @@ import MyText from "./components/MyText/MyText";
 import MyInput from "./components/MyInput/MyInput";
 import DropDown from "./components/DropDown/DropDown";
 import BarChart from "./components/BarChart/BarChart";
-import { INTERVAL_OPTIONS, MODELS, TOOLS } from "./constants/constants";
+import MetricsPanel from "./components/MetricsPanel/MetricsPanel";
+import AIPanel from "./components/AIPanel/AIPanel";
+import { INTERVAL_OPTIONS, METRIC_OPTIONS, MODELS, TOOLS } from "./constants/constants";
 
 export default function App() {
   const [interval, setInterval] = useState(INTERVAL_OPTIONS[0].value);
@@ -17,6 +19,8 @@ export default function App() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [records, setRecords] = useState([]);
+  const [submittedTool, setSubmittedTool] = useState(TOOLS[0].value);
+  const [metric, setMetric] = useState(METRIC_OPTIONS[0].value);
 
   async function handleOnSubmit() {
     const params = new URLSearchParams();
@@ -28,6 +32,7 @@ export default function App() {
     const response = await fetch(`http://localhost:3000/usage?${params}`);
     const data = await response.json();
     setRecords(data);
+    setSubmittedTool(tool);
   }
 
   return (
@@ -60,12 +65,20 @@ export default function App() {
             onChange={(e) => setTool(e.target.value)}
           />
         </div>
-        <div>
+        {/* <div>
           <MyText text="Model" />
           <DropDown
             options={MODELS}
             value={model}
             onChange={(e) => setModel(e.target.value)}
+          />
+        </div> */}
+        <div>
+          <MyText text="Display" />
+          <DropDown
+            options={METRIC_OPTIONS}
+            value={metric}
+            onChange={(e) => setMetric(e.target.value)}
           />
         </div>
         <div className="submit-wrapper">
@@ -73,7 +86,11 @@ export default function App() {
           <MyButton text="submit" onClick={() => handleOnSubmit()} />
         </div>
       </div>
-      {records.length > 0 && <BarChart records={records} tool={tool} />}
+      {records.length > 0 && <MetricsPanel records={records} />}
+      {records.length > 0 && (
+        <BarChart records={records} tool={submittedTool} metric={metric} />
+      )}
+      {records.length > 0 && <AIPanel records={records} />}
     </div>
   );
 }

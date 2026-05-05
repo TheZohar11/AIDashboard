@@ -19,12 +19,13 @@ ChartJS.register(
   Legend,
 );
 
-export default function BarChart({ records, tool }) {
+export default function BarChart({ records, tool, metric }) {
   const groupBy = tool === "all" ? "tool" : "model";
 
   const totals = records.reduce((acc, record) => {
     const key = record[groupBy];
-    acc[key] = (acc[key] || 0) + record.cost;
+    const value = metric === "cost" ? record.cost : (record.inputTokens + record.outputTokens);
+    acc[key] = (acc[key] || 0) + value;
     return acc;
   }, {});
 
@@ -32,10 +33,12 @@ export default function BarChart({ records, tool }) {
     labels: Object.keys(totals),
     datasets: [
       {
-        label: "Total Cost (USD)",
+        label: metric === "cost" ? "Total Cost (USD)" : "Total Tokens",
         data: Object.values(totals),
         backgroundColor: "#1976d2",
         borderRadius: 6,
+        barPercentage: 0.5,
+        categoryPercentage: 0.6,
       },
     ],
   };
@@ -46,7 +49,8 @@ export default function BarChart({ records, tool }) {
       legend: { display: false },
       title: {
         display: true,
-        text: tool === "all" ? "Cost by Tool" : `Cost by Model (${tool})`,
+        text: tool === "all" ? `${metric === "cost" ? "Cost" : "Tokens"} by Tool` : `${metric === "cost" ? "Cost" : "Tokens"} by Model (${tool})`,
+
         color: "#90caf9",
         font: { size: 16 },
       },
@@ -59,7 +63,11 @@ export default function BarChart({ records, tool }) {
 
   return (
     <div className="chart-container">
-      <Bar data={data} options={options} />
+      <Bar
+        data={data}
+        options={{ ...options, maintainAspectRatio: false }}
+        style={{ width: "100%", height: "100%" }}
+      />
     </div>
   );
 }
