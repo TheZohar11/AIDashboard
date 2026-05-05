@@ -1,3 +1,5 @@
+import "./MyText.css";
+
 export default function MyText({ text }) {
   return (
     <div>

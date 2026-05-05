@@ -1,5 +1,10 @@
-.container {
-  padding: 8px;
-  border-radius: 4px;
-  background-color: azure;
+.container select {
+  background: #2d3347;
+  color: #e0e0e0;
+  border: 1px solid #3a4060;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
 }
