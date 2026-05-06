@@ -62,7 +62,7 @@ app.post("/recommendations", async (req, res) => {
     const text = await googleApi(records);
     res.json({ recommendations: text });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: e?.message ?? String(e) });
   }
 });
 
